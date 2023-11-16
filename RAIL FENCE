@@ -1,0 +1,58 @@
+#include <stdio.h>
+#include <string.h>
+
+// Function to encrypt a message using Rail Fence cipher
+void railFenceEncrypt(char *plainText, int key, char *cipherText) {
+    int i, j, k = 0;
+    int textLength = strlen(plainText);
+
+    for (i = 0; i < key - 1; ++i) {
+        for (j = i; j < textLength; j += key - 1) {
+            cipherText[k++] = plainText[j];
+
+            if (i != 0 && i != key - 2 && j + 2 * (key - 1 - i) < textLength)
+                cipherText[k++] = plainText[j + 2 * (key - 1 - i)];
+        }
+    }
+
+    cipherText[k] = '\0';
+}
+
+// Function to decrypt a message using Rail Fence cipher
+void railFenceDecrypt(char *cipherText, int key, char *decryptedText) {
+    int i, j, k = 0;
+    int textLength = strlen(cipherText);
+
+    for (i = 0; i < key - 1; ++i) {
+        for (j = i; j < textLength; j += key - 1) {
+            decryptedText[j] = cipherText[k++];
+
+            if (i != 0 && i != key - 2 && j + 2 * (key - 1 - i) < textLength)
+                decryptedText[j + 2 * (key - 1 - i)] = cipherText[k++];
+        }
+    }
+
+    decryptedText[textLength] = '\0';
+}
+
+int main() {
+    char plainText[100], cipherText[100], decryptedText[100];
+    int key;
+
+    // Get the input from the user
+    printf("Enter the plain text: ");
+    scanf("%s", plainText);
+
+    printf("Enter the key: ");
+    scanf("%d", &key);
+
+    // Encrypt the plain text
+    railFenceEncrypt(plainText, key, cipherText);
+    printf("Encrypted Text: %s\n", cipherText);
+
+    // Decrypt the cipher text
+    railFenceDecrypt(cipherText, key, decryptedText);
+    printf("Decrypted Text: %s\n", decryptedText);
+
+    return 0;
+}
